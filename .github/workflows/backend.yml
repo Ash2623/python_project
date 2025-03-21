@@ -1,0 +1,45 @@
+name: Backend CI/CD
+
+on:
+  push:
+    paths:
+      - 'backend/**'  # Run pipeline only if files in backend change
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  backend-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: |
+          cd backend
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Deploy to VM
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd /home/ubuntu/backend
+            git pull origin main
+            source venv/bin/activate
+            pip install -r requirements.txt
+            sudo systemctl restart backend.service 
+          EOF
+
+      - name: Trigger Frontend Pipeline
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: "frontend.yml"
+          token: ${{ secrets.GITHUB_TOKEN }}
