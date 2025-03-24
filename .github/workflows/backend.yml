@@ -3,15 +3,21 @@ name: Deploy Backend Locally
 on:
   push:
     branches:
-      - backend  # Runs when changes are pushed to  backend branch
+      - backend  # Runs when changes are pushed to backend branch
 
 jobs:
   deploy:
-    runs-on: self-hosted  # Use a self-hosted runner instead of GitHub's default runner
+    runs-on: self-hosted  # Use a self-hosted runner
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Pull Latest Code
+        run: |
+          cd /home/ayush/project/backend
+          git reset --hard origin/backend  # Reset to latest version
+          git pull origin backend          # Pull latest changes
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -28,4 +34,4 @@ jobs:
         run: |
           cd /home/ayush/project/backend
           source venv/bin/activate
-          nohup python app.py &
+          nohup python app.py &  # Run backend in background
