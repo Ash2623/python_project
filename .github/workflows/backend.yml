@@ -16,8 +16,8 @@ jobs:
       - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ 192.168.18.214 }}
-          username: ${{ ayush }}
+          host: 192.168.18.214
+          username: ayush
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ayush/project/backend
