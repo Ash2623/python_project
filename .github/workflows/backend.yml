@@ -1,43 +1,27 @@
-name: Backend CI/CD
+name: Deploy Backend
 
 on:
   push:
     branches:
-      - backend
+      - backend  # Runs when changes are pushed to the backend branch
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          python-version: '3.10'
-
-      # - name: Install dependencies
-      #   run: |
-      #     cd backend
-      #     pip install -r requirements.txt
-
-      - name: Run Tests
-        run: |
-          cd backend
-          pytest
-
-      - name: Deploy Backend
-        run: |
-          echo "Deploying backend..."
-
-  trigger-frontend:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Frontend Pipeline
-        run: |
-          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Accept: application/vnd.github.everest-preview+json" \
-          https://api.github.com/repos/Ash2623/python_project/actions/workflows/frontend.yml/dispatches \
-          -d '{"ref":"frontend"}'
+          host: ${{ 192.168.18.214 }}
+          username: ${{ ayush }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/ayush/project/backend
+            git pull origin backend
+            source venv/bin/activate  # Activate virtual environment
+            pip install -r requirements.txt  # Install dependencies
+            systemctl restart backend.service  # Restart backend service (or use another method)
