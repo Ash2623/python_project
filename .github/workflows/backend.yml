@@ -1,43 +1,37 @@
-name: Backend CI/CD
+name: Deploy Backend Locally
 
 on:
   push:
     branches:
-      - backend
+      - backend  # Runs when changes are pushed to backend 
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: self-hosted  # Use a self-hosted runner
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Pull Latest Code
+        run: |
+          cd /home/ayush/project/backend
+          git reset --hard origin/backend  # Reset to latest version
+          git pull origin backend          # Pull latest changes
 
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.12'
 
-      # - name: Install dependencies
-      #   run: |
-      #     cd backend
-      #     pip install -r requirements.txt
-
-      - name: Run Tests
+      - name: Install Dependencies
         run: |
-          cd backend
-          pytest
+          cd /home/ayush/project/backend
+          python -m venv venv
+          source venv/bin/activate
 
-      - name: Deploy Backend
+      - name: Run Backend Server
         run: |
-          echo "Deploying backend..."
-
-  trigger-frontend:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Frontend Pipeline
-        run: |
-          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Accept: application/vnd.github.everest-preview+json" \
-          https://api.github.com/repos/Ash2623/python_project/actions/workflows/frontend.yml/dispatches \
-          -d '{"ref":"frontend"}'
+          cd /home/ayush/project/backend
+          source venv/bin/activate
+          nohup python app.py &  # Run backend in background
