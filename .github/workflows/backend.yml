@@ -13,15 +13,15 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Deploy to Server via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: 192.168.18.214
-          username: ayush
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass  # Install sshpass tool
+
+      - name: Deploy to Server via SSH with Password
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ayush@192.168.18.214 << 'EOF'
             cd /home/ayush/project/backend
             git pull origin backend
             source venv/bin/activate  # Activate virtual environment
             pip install -r requirements.txt  # Install dependencies
             python app.py
+          EOF
