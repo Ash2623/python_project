@@ -23,7 +23,6 @@ jobs:
           cd /home/ayush/project/backend
           python -m venv venv
           source venv/bin/activate
-          pip install -r requirements.txt
 
       - name: Run Backend Server
         run: |
