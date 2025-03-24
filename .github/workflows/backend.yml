@@ -26,6 +26,6 @@ jobs:
 
       - name: Run Backend Server
         run: |
-          cd backend
+          cd /home/ayush/project/backend
           source venv/bin/activate
           nohup python app.py &
