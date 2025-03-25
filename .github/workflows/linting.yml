@@ -25,7 +25,9 @@ jobs:
           python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
-          pip install flake8 black isort pytest
+          pip install --upgrade pip setuptools wheel  # Ensure latest package tools
+          pip uninstall -y black  # Remove existing black
+          pip install black==23.3.0  # Install a stable version
 
       - name: Run Linting (Flake8)
         run: |
