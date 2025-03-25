@@ -10,7 +10,7 @@ jobs:
     uses: ./.github/workflows/linting.yml  # Call the linting template
     with:
       python_version: '3.12'
-
+    runs-on: ubuntu-latest  #
   deploy:
     runs-on: self-hosted
     needs: lint  
