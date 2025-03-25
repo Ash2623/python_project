@@ -1,17 +1,17 @@
 on:
   push:
     branches:
-      - frontend  # Runs when changes are pushed to backend
+      - frontend  
 
 jobs:
   lint:
-    uses: ./.github/workflows/linting.yml  # Call the linting template
+    uses: ./.github/workflows/linting.yml 
     with:
       python_version: '3.12'
 
   deploy:
     runs-on: self-hosted
-    needs: lint  # Using your self-hosted runner
+    needs: lint 
 
     steps:
       - name: Checkout Code
@@ -26,5 +26,4 @@ jobs:
       - name: Restart Frontend Server
         run: |
           cd /home/ayush/project/frontend
-          source venv/bin/activate  # Use existing virtual environment
           nohup python app.py &  # Start frontend in the background
