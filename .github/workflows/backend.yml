@@ -3,10 +3,10 @@ name: Deploy Backend Locally
 on:
   push:
     branches:
-      - backend  # Runs when changes are pushed to backend
+      - backend  
 
 jobs:
-  lint:  # Use GitHub's predefined runner for linting
+  lint:  
     uses: ./.github/workflows/linting.yml  
     with:
       python_version: '3.12'
@@ -22,11 +22,10 @@ jobs:
       - name: Pull Latest Code
         run: |
           cd /home/ayush/project/backend
-          git reset --hard origin/backend  # Reset to latest version
-          git pull origin backend          # Pull latest changes
-
+          git reset --hard origin/backend 
+          git pull origin backend          
       - name: Run Backend Server
         run: |
           cd /home/ayush/project/backend
-          source venv/bin/activate  # Use existing virtual environment
-          nohup python app.py &  # Start backend in background
+          source venv/bin/activate  
+          nohup python app.py &  
