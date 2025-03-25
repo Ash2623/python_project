@@ -6,11 +6,12 @@ on:
       - backend  # Runs when changes are pushed to backend
 
 jobs:
-  lint:
-    uses: ./.github/workflows/linting.yml  # Call the linting template
+  lint:  # Use GitHub's predefined runner for linting
+    uses: ./.github/workflows/linting.yml  
     with:
       python_version: '3.12'
-
+    runs-on: ubuntu-latest  # Use GitHub's hosted runner
+    
   deploy:
     runs-on: self-hosted
     needs: lint  
