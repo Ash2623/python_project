@@ -25,19 +25,19 @@ jobs:
           python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
-          pip install flake8 black isort pytest  # Install linters
+          pip install flake8 black isort pytest
 
       - name: Run Linting (Flake8)
         run: |
           source venv/bin/activate
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+          flake8 . --exclude=venv,migrations,__pycache__ --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --exclude=venv,migrations,__pycache__ --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
 
       - name: Run Code Formatting (Black & isort)
         run: |
           source venv/bin/activate
           black --check --diff . --exclude "venv|migrations|__pycache__"
-          isort --check-only . --skip venv
+          isort --check-only . --skip venv --skip migrations --skip __pycache__
 
       - name: Run Tests (Ignore if no tests)
         run: |
