@@ -36,7 +36,7 @@ jobs:
       - name: Run Code Formatting (Black & isort)
         run: |
           source venv/bin/activate
-          black . --exclude "venv/*"
+          black . --check --exclude "venv/*"
           isort . --skip venv
 
       - name: Run Tests
