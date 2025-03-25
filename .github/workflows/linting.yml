@@ -1,4 +1,4 @@
-name: Frontend Linting
+name: Python CI Template
 
 on:
   workflow_call:
@@ -8,35 +8,32 @@ on:
         type: string
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
+  install-lint-test:
+    runs-on: self-hosted
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Virtual Environment
-        run: |
-          cd /home/ayush/project/frontend
-          if [ ! -d "venv" ]; then
-            python3 -m venv venv
-          fi
-          source venv/bin/activate
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python_version }}
 
-      - name: Install Dependencies
+      - name: Install Dependencies & Linters
         run: |
-          source /home/ayush/project/frontend/venv/bin/activate
-          pip install --upgrade pip setuptools wheel
-          pip install flake8 black isort
+          pip install flake8 black isort pytest  # Install linters
 
       - name: Run Linting (Flake8)
         run: |
-          source /home/ayush/project/frontend/venv/bin/activate
-          flake8 . --exclude=venv,migrations,__pycache__ --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics  # Check for critical errors
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics  # Full lint check
 
       - name: Run Code Formatting (Black & isort)
         run: |
-          source /home/ayush/project/frontend/venv/bin/activate
-          black . --exclude "venv|migrations|__pycache__"
-          isort . --skip venv --skip migrations
+          black . --check
+          isort .
 
+      - name: Run Tests
+        run: |
+          pytest
