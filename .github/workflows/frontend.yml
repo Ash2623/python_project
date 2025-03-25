@@ -3,40 +3,24 @@ name: Deploy Frontend
 on:
   push:
     branches:
-      - frontend  # Runs when changes are pushed to frontend
+      - frontend  # Runs when changes are pushed to the frontend branch
 
 jobs:
-  lint-test-build-deploy:
-    runs-on: self-hosted  # Using user-defined runner
+  deploy:
+    runs-on: self-hosted  # Using your self-hosted runner
 
     steps:
-      - name: Checkout Frontend Code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: Install Dependencies
-        run: |
-          npm install
-
-      - name: Run Linting
-        run: |
-          npm run lint
-
-      - name: Run Tests
-        run: |
-          npm test
-
-      - name: Build Frontend
-        run: |
-          npm run build
-
-      - name: Deploy Frontend to Server
+      - name: Pull Latest Code
         run: |
           cd /home/ayush/project/frontend
-          rm -rf build
-          cp -r ~/actions-runner/_work/frontend_project/frontend_project/build .
-          echo "Frontend successfully deployed!"
+          git reset --hard origin/frontend
+          git pull origin frontend
+
+      - name: Restart Frontend Server
+        run: |
+          cd /home/ayush/project/frontend
+          source venv/bin/activate  # Use existing virtual environment
+          nohup python app.py &  # Start frontend in the background
