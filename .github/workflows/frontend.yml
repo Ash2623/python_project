@@ -1,13 +1,17 @@
-name: Deploy Frontend
-
 on:
   push:
     branches:
-      - frontend  # Runs when changes are pushed to the frontend branch
+      - frontend  # Runs when changes are pushed to backend
 
 jobs:
+  lint:
+    uses: ./.github/workflows/linting.yml  # Call the linting template
+    with:
+      python_version: '3.12'
+
   deploy:
-    runs-on: self-hosted  # Using your self-hosted runner
+    runs-on: self-hosted
+    needs: lint  # Using your self-hosted runner
 
     steps:
       - name: Checkout Code
