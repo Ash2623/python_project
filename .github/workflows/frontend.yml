@@ -26,4 +26,4 @@ jobs:
       - name: Restart Frontend Server
         run: |
           cd /home/ayush/project/frontend
-          nohup python app.py &  # Start frontend in the background
+          nohup python -m http.server 8000
