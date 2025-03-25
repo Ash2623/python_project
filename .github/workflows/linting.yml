@@ -9,7 +9,7 @@ on:
 
 jobs:
   install-lint-test:
-    runs-on: ubuntu-latest  # Use GitHub-hosted runner
+    runs-on: ubuntu-latest  # Using GitHub's predefined runner
 
     steps:
       - name: Checkout Code
@@ -22,29 +22,28 @@ jobs:
 
       - name: Create Virtual Environment
         run: |
-          rm -rf venv  # Remove any existing venv to avoid corruption
+          rm -rf venv  # Remove any existing venv
           python -m venv venv
           source venv/bin/activate
-          python -m ensurepip --default-pip  # Ensure pip is installed
-          pip install --upgrade pip setuptools wheel  # Upgrade package tools
+          python -m ensurepip --default-pip
+          pip install --upgrade pip setuptools wheel
 
       - name: Install Dependencies & Linters
         run: |
           source venv/bin/activate
-          python -m pip install --upgrade pip  # Ensure pip is working
           pip install -r requirements.txt
-          pip install flake8 black isort pytest  # Install linters
+          pip install flake8 black isort pytest
 
       - name: Run Linting (Flake8)
         run: |
           source venv/bin/activate
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --exclude=venv,migrations,__pycache__ --count --select=E9,F63,F7,F82 --show-source --statistics
 
       - name: Run Code Formatting (Black & isort)
         run: |
           source venv/bin/activate
-          black . --check --exclude "venv/*"
-          isort . --skip venv
+          black . --check --exclude "venv|migrations|__pycache__"
+          isort . --skip venv --skip migrations
 
       - name: Run Tests
         run: |
