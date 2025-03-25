@@ -36,11 +36,12 @@ jobs:
       - name: Run Code Formatting (Black & isort)
         run: |
           source venv/bin/activate
-          black --check --diff . --exclude "venv|migrations|__pycache__"
+          black --check . --exclude "venv|migrations|__pycache__"
           isort --check-only . --skip venv --skip migrations --skip __pycache__
 
       - name: Run Tests (Ignore if no tests)
         run: |
           source venv/bin/activate
           pytest || echo "No tests found, skipping..."
+
 
