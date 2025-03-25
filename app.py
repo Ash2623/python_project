@@ -7,7 +7,7 @@ CORS(app)
 
 @app.route("/")  # Make sure this route exists
 def home():
-    return jsonify({"message": "Welcome to the per!"})
+    return jsonify({"message": "Welcome to the iderr!"})
 
 
 if __name__ == "__main__":
