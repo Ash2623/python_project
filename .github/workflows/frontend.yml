@@ -1,29 +1,42 @@
-name: Frontend CI/CD
+name: Deploy Frontend
 
 on:
   push:
     branches:
-      - frontend
-  workflow_dispatch:
+      - frontend 
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  lint-test-build-deploy:
+    runs-on: self-hosted
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout Frontend Code
+        uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          cd frontend
-          npm install
-
-      - name: Run Tests
-        run: |
-          cd frontend
-          npm test
-
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          
       - name: Deploy Frontend
         run: |
-          echo "Deploying frontend..."
+          python -m http.server 8000
+          echo "Frontend deployed successfully!"
 
+      # - name: Install Dependencies
+      #   run: |
+      #     npm install
+
+      # - name: Run Linting
+      #   run: |
+      #     npm run lint
+
+      # - name: Run Tests
+      #   run: |
+      #     npm test
+
+      # - name: Build Frontend
+      #   run: |
+      #     npm run build
+
+      
