@@ -22,8 +22,12 @@ jobs:
           cd /home/ayush/project/frontend
           git reset --hard origin/frontend
           git pull origin frontend
+ 
+      - name: Kill Existing Frontend Server (if running)
+        run: |
+          pkill -f "python -m http.server" || true  # Ignore errors if no server is running
 
-      - name: Restart Frontend Server
+      - name: Start Frontend Server
         run: |
           cd /home/ayush/project/frontend
-          nohup python -m http.server 8000
+          nohup python -m http.server 8000 &  # Run HTTP server in the background
