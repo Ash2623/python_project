@@ -10,7 +10,6 @@ jobs:
     uses: ./.github/workflows/linting.yml  
     with:
       python_version: '3.12'
-    runs-on: ubuntu-latest  # Use GitHub's hosted runner
     
   deploy:
     runs-on: self-hosted
